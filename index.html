@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Algebraic Solver</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ----------- 1. Welcome Screen ----------- -->
+<div id="welcome" class="screen active">
+  <div id="logo">🧮</div>
+  <h1>Smart Algebraic Solver</h1>
+  <p>Solve Expressions, Polynomials, and Equations</p>
+  <button onclick="showScreen('menu')">Start</button>
+</div>
+
+<!-- ----------- 2. Menu Screen ----------- -->
+<div id="menu" class="screen">
+  <h2>Select a Solver</h2>
+  <button onclick="openSolver('expr')">Expression Solver</button>
+  <button onclick="openSolver('poly')">Polynomial Roots</button>
+  <button onclick="openSolver('eq2')">Equation Solver (2 Variables)</button>
+  <button class="back" onclick="showScreen('welcome')">Back</button>
+</div>
+
+<!-- ----------- 3. Solver Screen ----------- -->
+<div id="solver" class="screen">
+  <div id="solverContent"></div>
+  <button class="back" onclick="showScreen('menu')">Back</button>
+</div>
+
+<script src="js/solver.js"></script>
+</body>
+</html>
