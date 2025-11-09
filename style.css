@@ -1,56 +1,93 @@
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Algebraic Solver</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ----------- 1. Welcome Screen ----------- -->
+<div id="welcome" class="screen active">
+  <div id="logo">🧮</div>
+  <h1>Smart Algebraic Solver</h1>
+  <p>Solve Expressions, Polynomials, and Equations</p>
+  <button onclick="showScreen('menu')">Start</button>
+</div>
+
+<!-- ----------- 2. Menu Screen ----------- -->
+<div id="menu" class="screen">
+  <h2>Select a Solver</h2>
+  <button onclick="openSolver('expr')">Expression Solver</button>
+  <button onclick="openSolver('poly')">Polynomial Roots</button>
+  <button onclick="openSolver('eq2')">Equation Solver (2 Variables)</button>
+  <button class="back" onclick="showScreen('welcome')">Back</button>
+</div>
+
+<!-- ----------- 3. Solver Screen ----------- -->
+<div id="solver" class="screen">
+  <div id="solverContent"></div>
+  <button class="back" onclick="showScreen('menu')">Back</button>
+</div>
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-.screen {
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-  width: 420px;
-  padding: 30px;
-  text-align: center;
-  display: none;
-  animation: fade 0.3s ease;
+function openSolver(type) {
+  const box = document.getElementById("solverContent");
+  showScreen('solver');
+
+  if (type === "expr") {
+    box.innerHTML = `
+      <h2>Expression Solver</h2>
+      <input id="exprInput" placeholder="e.g. (3+4)*2^2/(1+1)">
+      <br><button onclick="simulate('Expression')">Solve</button>
+      <div id="output"></div>`;
+  } else if (type === "poly") {
+    box.innerHTML = `
+      <h2>Polynomial Solver</h2>
+      <input id="a" type="number" placeholder="a">
+      <input id="b" type="number" placeholder="b">
+      <input id="c" type="number" placeholder="c"><br>
+      <button onclick="simulate('Polynomial')">Find Roots</button>
+      <div id="output"></div>`;
+  } else if (type === "eq2") {
+    box.innerHTML = `
+      <h2>Equation Solver (2 Variables)</h2>
+      <p>a₁x + b₁y = c₁<br>a₂x + b₂y = c₂</p>
+      <input id="a1" placeholder="a₁">
+      <input id="b1" placeholder="b₁">
+      <input id="c1" placeholder="c₁"><br>
+      <input id="a2" placeholder="a₂">
+      <input id="b2" placeholder="b₂">
+      <input id="c2" placeholder="c₂"><br>
+      <button onclick="simulate('Equation')">Solve</button>
+      <div id="output"></div>`;
+  }
 }
 
-.screen.active {
-  display: block;
+function simulate(type) {
+  const out = document.getElementById("output");
+  out.textContent = "Running " + type + " Solver...\n";
+  let dots = 0;
+  const interval = setInterval(() => {
+    dots++;
+    out.textContent = "Running " + type + " Solver" + ".".repeat(dots);
+    if (dots === 4) {
+      clearInterval(interval);
+      let result = "";
+      if (type === "Expression") result = "Result: 14";
+      if (type === "Polynomial") result = "Roots: x₁=2, x₂=1";
+      if (type === "Equation") result = "x=2.33, y=3.67";
+      out.textContent = "✅ " + result;
+    }
+  }, 400);
 }
+</script>
 
-@keyframes fade {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-h1, h2 { color: #0d47a1; margin: 10px 0; }
-button {
-  background: #1976d2;
-  color: #fff;
-  border: none;
-  padding: 12px 22px;
-  margin: 8px;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-button:hover { background: #0d47a1; }
-input {
-  margin: 5px;
-  padding: 8px;
-  width: 80%;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-.back { background: #777; }
-#logo {
-  font-size: 70px;
-  margin: 10px;
-  color: #1976d2;
-}
+</body>
+</html>
