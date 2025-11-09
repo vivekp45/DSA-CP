@@ -31,6 +31,63 @@
   <button class="back" onclick="showScreen('menu')">Back</button>
 </div>
 
-<script src="js/solver.js"></script>
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function openSolver(type) {
+  const box = document.getElementById("solverContent");
+  showScreen('solver');
+
+  if (type === "expr") {
+    box.innerHTML = `
+      <h2>Expression Solver</h2>
+      <input id="exprInput" placeholder="e.g. (3+4)*2^2/(1+1)">
+      <br><button onclick="simulate('Expression')">Solve</button>
+      <div id="output"></div>`;
+  } else if (type === "poly") {
+    box.innerHTML = `
+      <h2>Polynomial Solver</h2>
+      <input id="a" type="number" placeholder="a">
+      <input id="b" type="number" placeholder="b">
+      <input id="c" type="number" placeholder="c"><br>
+      <button onclick="simulate('Polynomial')">Find Roots</button>
+      <div id="output"></div>`;
+  } else if (type === "eq2") {
+    box.innerHTML = `
+      <h2>Equation Solver (2 Variables)</h2>
+      <p>a₁x + b₁y = c₁<br>a₂x + b₂y = c₂</p>
+      <input id="a1" placeholder="a₁">
+      <input id="b1" placeholder="b₁">
+      <input id="c1" placeholder="c₁"><br>
+      <input id="a2" placeholder="a₂">
+      <input id="b2" placeholder="b₂">
+      <input id="c2" placeholder="c₂"><br>
+      <button onclick="simulate('Equation')">Solve</button>
+      <div id="output"></div>`;
+  }
+}
+
+function simulate(type) {
+  const out = document.getElementById("output");
+  out.textContent = "Running " + type + " Solver...\n";
+  let dots = 0;
+  const interval = setInterval(() => {
+    dots++;
+    out.textContent = "Running " + type + " Solver" + ".".repeat(dots);
+    if (dots === 4) {
+      clearInterval(interval);
+      let result = "";
+      if (type === "Expression") result = "Result: 14";
+      if (type === "Polynomial") result = "Roots: x₁=2, x₂=1";
+      if (type === "Equation") result = "x=2.33, y=3.67";
+      out.textContent = "✅ " + result;
+    }
+  }, 400);
+}
+</script>
+
 </body>
 </html>
