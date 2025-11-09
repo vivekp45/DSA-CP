@@ -8,87 +8,99 @@
 </head>
 <body>
 
-  <!-- ----------- 1. Welcome Screen ----------- -->
+  <!-- 1. Welcome Screen -->
   <div id="welcome" class="screen active">
     <div id="logo">🧮</div>
     <h1>Smart Algebraic Solver</h1>
     <p>Solve Expressions, Polynomials, and Equations</p>
-    <button onclick="showScreen('menu')">Start</button>
+    <button id="startBtn">Start</button>
   </div>
 
-  <!-- ----------- 2. Menu Screen ----------- -->
+  <!-- 2. Menu Screen -->
   <div id="menu" class="screen">
     <h2>Select a Solver</h2>
-    <button onclick="openSolver('expr')">Expression Solver</button>
-    <button onclick="openSolver('poly')">Polynomial Roots</button>
-    <button onclick="openSolver('eq2')">Equation Solver (2 Variables)</button>
-    <button class="back" onclick="showScreen('welcome')">Back</button>
+    <button class="option" data-type="expr">Expression Solver</button>
+    <button class="option" data-type="poly">Polynomial Roots</button>
+    <button class="option" data-type="eq2">Equation Solver (2 Variables)</button>
+    <button class="back" id="backToWelcome">Back</button>
   </div>
 
-  <!-- ----------- 3. Solver Screen ----------- -->
+  <!-- 3. Solver Screen -->
   <div id="solver" class="screen">
     <div id="solverContent"></div>
-    <button class="back" onclick="showScreen('menu')">Back</button>
+    <button class="back" id="backToMenu">Back</button>
   </div>
 
   <script>
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screens = document.querySelectorAll('.screen');
+    const show = id => {
+      screens.forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-    }
+    };
+
+    document.getElementById('startBtn').onclick = () => show('menu');
+    document.getElementById('backToWelcome').onclick = () => show('welcome');
+    document.getElementById('backToMenu').onclick = () => show('menu');
+
+    document.querySelectorAll('.option').forEach(btn =>
+      btn.addEventListener('click', () => openSolver(btn.dataset.type))
+    );
+
+    let currentInterval = null;
 
     function openSolver(type) {
-      const box = document.getElementById("solverContent");
-      showScreen('solver');
+      const box = document.getElementById('solverContent');
+      show('solver');
+      if (currentInterval) { clearInterval(currentInterval); currentInterval = null; }
 
-      if (type === "expr") {
+      if (type === 'expr') {
         box.innerHTML = `
           <h2>Expression Solver</h2>
-          <input id="exprInput" placeholder="e.g. (3+4)*2^2/(1+1)">
-          <br><button onclick="simulate('Expression')">Solve</button>
+          <input id="exprInput" placeholder="(3+4)*2^2/(1+1)">
+          <br><button id="run">Solve</button>
           <div id="output"></div>`;
-      } else if (type === "poly") {
+      } else if (type === 'poly') {
         box.innerHTML = `
           <h2>Polynomial Solver</h2>
           <input id="a" type="number" placeholder="a">
           <input id="b" type="number" placeholder="b">
           <input id="c" type="number" placeholder="c"><br>
-          <button onclick="simulate('Polynomial')">Find Roots</button>
+          <button id="run">Find Roots</button>
           <div id="output"></div>`;
-      } else if (type === "eq2") {
+      } else {
         box.innerHTML = `
           <h2>Equation Solver (2 Variables)</h2>
-          <p>a₁x + b₁y = c₁<br>a₂x + b₂y = c₂</p>
+          <p>a₁x + b₁y = c₁   a₂x + b₂y = c₂</p>
           <input id="a1" placeholder="a₁">
           <input id="b1" placeholder="b₁">
           <input id="c1" placeholder="c₁"><br>
           <input id="a2" placeholder="a₂">
           <input id="b2" placeholder="b₂">
           <input id="c2" placeholder="c₂"><br>
-          <button onclick="simulate('Equation')">Solve</button>
+          <button id="run">Solve</button>
           <div id="output"></div>`;
       }
+
+      document.getElementById('run').onclick = () => simulate(type);
     }
 
     function simulate(type) {
-      const out = document.getElementById("output");
-      out.textContent = "Running " + type + " Solver...\n";
+      const out = document.getElementById('output');
+      out.textContent = `Running ${type} Solver`;
       let dots = 0;
-      const interval = setInterval(() => {
-        dots++;
-        out.textContent = "Running " + type + " Solver" + ".".repeat(dots);
-        if (dots === 4) {
-          clearInterval(interval);
-          let result = "";
-          if (type === "Expression") result = "Result: 14";
-          if (type === "Polynomial") result = "Roots: x₁=2, x₂=1";
-          if (type === "Equation") result = "x=2.33, y=3.67";
-          out.textContent = "✅ " + result;
-        }
-      }, 400);
+      currentInterval = setInterval(() => {
+        dots = (dots + 1) % 5;
+        out.textContent = `Running ${type} Solver${'.'.repeat(dots)}`;
+      }, 350);
+
+      setTimeout(() => {
+        clearInterval(currentInterval);
+        currentInterval = null;
+        if (type === 'expr') out.textContent = '✅ Result: 14';
+        else if (type === 'poly') out.textContent = '✅ Roots: x₁ = 2, x₂ = 1';
+        else out.textContent = '✅ x = 2.33, y = 3.67';
+      }, 1800);
     }
   </script>
-
 </body>
 </html>
-
